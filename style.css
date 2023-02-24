@@ -1,0 +1,60 @@
+/* 
+    Theme Name: My Custom themes
+    Theme URI:  http://localhost/wordpress
+    Description:  Twenty Fifteen Child Theme
+    Author:     Nam Tran
+    Version:    1.1.2
+    License:      GNU General Public License v2 or later
+*/
+
+.menu-main-menu-container ul{
+    display: flex;
+    list-style: none;
+    padding: 0;
+}
+.menu-main-menu-container ul li{
+    padding: 8px 20px;
+}
+.newtheme_post {
+    display: flex;
+    align-items: center;
+}
+.newtheme_post img {
+    max-width: 200px;
+    height: auto;
+}
+#listuser table{
+    min-width: 50%;
+}
+#listuser table td{
+    border: 1px dotted;
+    border-collapse: collapse;
+    padding: 0px 15px;
+}
+#listuser table td a {
+    display: block;
+    padding: 10px 0;
+}
+.ui-helper-hidden-accessible{
+    display:none;
+}
+.ui-autocomplete {
+    list-style: none;
+    padding: 5px;
+    margin: 0;
+    background-color: rgb(255, 253, 226);
+    box-sizing: border-box;
+    max-width: 95%;
+}
+.ui-autocomplete li {
+    padding: 10px;
+}
+.ui-autocomplete li:hover {
+    background-color: rgb(255, 238, 160);
+    font-weight: bold;
+    cursor: pointer;
+}
+.product_label{
+    padding: 8px 0;
+    font-weight: bold;
+}
