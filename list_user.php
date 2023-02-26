@@ -28,7 +28,7 @@ $users = $query->get_results();
                     $i++;
                     echo "<tr>";
                     echo "<td>" . $i . "</td>";
-                    echo "<td>" . $user->display_name . "</td>";
+                    echo "<td><a href='" . get_author_posts_url($user->ID) . "'>" . $user->display_name . "</a></td>";
                     echo "<td>" . $user->user_login . "</td>";
                     echo "<td>" . $user->user_email . "</td>";
                     echo "</tr>";

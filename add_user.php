@@ -89,7 +89,11 @@ echo $thongbao;
             ?>
             <button type="submit" class="mui-btn mui-btn--raised mui-btn--primary">Submit</button>
         </form>
-
-        <a class='mui-btn mui-btn--raised' href="<?php echo get_permalink($group); ?>">Quay lại trang danh sách</a>
+        <?php 
+        if ($group) {
+            echo "<a class='mui-btn mui-btn--raised' href='" . get_permalink($group) . "'>Quay lại trang danh sách</a>";
+        }
+        ?>
+        
 <?php
 get_footer();

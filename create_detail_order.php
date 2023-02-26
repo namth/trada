@@ -49,6 +49,7 @@ if (
             update_field('field_63bd131405595', $new_product, $order_detail);
             update_field('field_63bd134205596', $price, $order_detail);
             update_field('field_63bd139205599', $order, $order_detail);
+            update_field('field_63f9e870f1437', "Chưa thanh toán", $order_detail);
             foreach ($user as $u) {
                 $user_obj = get_user_by('id', $u);
                 $row_update = array(

@@ -30,10 +30,10 @@
     border: 1px dotted;
     border-collapse: collapse;
     padding: 0px 15px;
+    line-height: 40px;
 }
 #listuser table td a {
     display: block;
-    padding: 10px 0;
 }
 .ui-helper-hidden-accessible{
     display:none;

@@ -36,6 +36,5 @@ $query = new WP_Query($args);
     </table>
 </div>
 <a class='mui-btn mui-btn--primary' href="<?php echo get_bloginfo('url') . '/them-thanh-vien-moi/?g='; ?>">Tạo tài khoản thành viên</a>
-<a class='mui-btn mui-btn--primary' href="<?php echo get_bloginfo('url') ?>/them-thanh-vien-tu-danh-sach/">Thêm thành viên</a>
 <?php 
 get_footer();

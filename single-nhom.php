@@ -7,6 +7,10 @@ if (have_posts()) {
         the_post();
 
         $group = get_the_ID();
+        $current_user_id = get_current_user_id();
+        $group_owner_id = get_field('chu_quy', $group);
+        $verify = ($current_user_id == $group_owner_id) || current_user_can('administrator');
+
         $i = 0;
         $list_user = get_field('danh_sach_thanh_vien');
         foreach ($list_user as $user) {
@@ -15,7 +19,7 @@ if (have_posts()) {
 
             $data .= "<tr>";
             $data .= "<td>" . $i . "</td>";
-            $data .= "<td><a href='#'>" . $user_obj->display_name . "</a></td>";
+            $data .= "<td><a href='" . get_author_posts_url($user_obj->ID) . "'>" . $user_obj->display_name . "</a></td>";
             $data .= "</tr>";
         }
 ?>
@@ -37,6 +41,7 @@ if (have_posts()) {
 </div>
 <a class='mui-btn mui-btn--primary' href="<?php echo get_bloginfo('url') . '/them-thanh-vien-moi/?g=' . $group; ?>">Tạo tài khoản thành viên</a>
 <a class='mui-btn mui-btn--primary' href="<?php echo get_bloginfo('url') . '/them-thanh-vien-tu-danh-sach/?g=' . $group; ?>">Thêm thành viên</a>
+<a class='mui-btn mui-btn--danger' href="<?php echo get_bloginfo('url') . '/kiem-tra-cong-no-nhom/?g=' . $group; ?>">Kiểm tra công nợ</a>
 
 <h3>Lịch sử hoạt động của nhóm</h3>
 <?php 

@@ -26,6 +26,7 @@ if (
 
         update_field('field_63bd1693129d9', $group, $inserted); # group
         update_field('field_63bd1678129d8', $dateorder->format('Ymd'), $inserted); # date
+        update_field('field_63f7284f399ac', 'Đơn mới', $inserted); # date
 
         if ($inserted) {
             $thongbao = 'Tạo đơn hàng thành công';

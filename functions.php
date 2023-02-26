@@ -59,3 +59,42 @@ function calculate_price(){
     echo $quantity * $price;
     exit;
 }
+
+function calculate_order_payment ($order_id) {
+    $total = 0;
+    $args   = array(
+        'post_type'     => 'chi_tiet_don_hang',
+        'posts_per_page' => 999,
+    );
+    $args['meta_query'][] = array(
+        array(
+            'key'       => 'don_hang',
+            'value'     => $order_id,
+            'compare'   => '=',
+        ),
+    );
+
+    $query = new WP_Query($args);
+
+    if ($query->have_posts()) {
+        while ($query->have_posts()) {
+            $query->the_post();
+
+            $so_tien = get_field('so_tien');
+            $total += $so_tien;
+        } wp_reset_postdata();
+    }
+
+    return $total;
+}
+
+
+// filter sub field in acf repeater
+function my_posts_where( $where ) {
+    
+    $where = str_replace("meta_key = 'danh_sach_nguoi_su_dung_$", "meta_key LIKE 'danh_sach_nguoi_su_dung_%", $where);
+
+    return $where;
+}
+
+add_filter('posts_where', 'my_posts_where');
