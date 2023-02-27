@@ -109,7 +109,7 @@ if(is_user_logged_in()) {
                         <input type="text" name="username" value="">
                     </div>
                     <div class="mui-textfield product_price">
-                        <label for="password">User ID / Email</label>
+                        <label for="password">Password</label>
                         <input type="password" name="password" value="">
                     </div>
                     <div class="mui-textfield">
