@@ -58,3 +58,12 @@
     padding: 8px 0;
     font-weight: bold;
 }
+.order_listing a{
+    display: inline-flex;
+    background: aliceblue;
+    padding: 6px 16px;
+    border: 1px solid dodgerblue;
+    height: 81px;
+    align-items: center;
+    margin: 5px;
+}
