@@ -67,3 +67,13 @@
     align-items: center;
     margin: 5px;
 }
+.order_listing a.doneorder {
+    border-color: #14bd14;
+    background: #e3ffe7;
+    color: #14bd14;
+}
+.order_listing a.neworder{
+    border-color: #bd1414;
+    background: #ffe3e3;
+    color: #bd1414;
+}

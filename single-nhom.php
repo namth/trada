@@ -23,6 +23,41 @@ if (have_posts()) {
             $data .= "</tr>";
         }
 ?>
+<h2>Lịch sử hoạt động của nhóm</h2>
+<div class="order_listing">
+    <?php 
+    $paged = (get_query_var('paged')) ? absint(get_query_var('paged')) : 1;
+    $args = [
+        'post_type' => 'don_hang',
+    ];
+    $args['meta_query'][] = array(
+        array(
+            'key'       => 'nhom',
+            'value'     => $group,
+            'compare'   => '=',
+        ),
+    );
+    $query = new WP_Query($args);
+
+    if ($query->have_posts()) {
+        while ($query->have_posts()) {
+            $query->the_post();
+
+            $trang_thai = get_field('trang_thai');
+            if ($trang_thai == "Đơn mới") {
+                $class = 'neworder';
+            } else if ($trang_thai == "Thanh toán xong") {
+                $class = 'doneorder';
+            } else $class = '';
+
+            echo "<a class='" . $class . "' href='" . get_permalink() . "'>" . get_field('ngay_thang') . "</a>";
+            // echo "<br>";
+        } wp_reset_postdata();
+    }
+    ?>
+</div>
+<a class='mui-btn mui-btn--primary' href="<?php echo get_bloginfo('url') . '/tao-order-moi/?g=' . get_the_ID(); ?>">Thêm order</a>
+
 <h2><?php echo get_the_title(); ?></h2>
 <div class="col-12 box mb-20" id="listuser">
     <table class="table table-hover">
@@ -43,34 +78,6 @@ if (have_posts()) {
 <a class='mui-btn mui-btn--primary' href="<?php echo get_bloginfo('url') . '/them-thanh-vien-tu-danh-sach/?g=' . $group; ?>">Thêm thành viên</a>
 <a class='mui-btn mui-btn--danger' href="<?php echo get_bloginfo('url') . '/kiem-tra-cong-no-nhom/?g=' . $group; ?>">Kiểm tra công nợ</a>
 
-<h3>Lịch sử hoạt động của nhóm</h3>
-<div class="order_listing">
-    <?php 
-    $paged = (get_query_var('paged')) ? absint(get_query_var('paged')) : 1;
-    $args = [
-        'post_type' => 'don_hang',
-    ];
-    $args['meta_query'][] = array(
-        array(
-            'key'       => 'nhom',
-            'value'     => $group,
-            'compare'   => '=',
-        ),
-    );
-    $query = new WP_Query($args);
-
-    if ($query->have_posts()) {
-        while ($query->have_posts()) {
-            $query->the_post();
-
-            echo "<a href='" . get_permalink() . "'>" . get_field('ngay_thang') . "</a>";
-            // echo "<br>";
-        } wp_reset_postdata();
-    }
-    ?>
-</div>
-
-<a class='mui-btn mui-btn--primary' href="<?php echo get_bloginfo('url') . '/tao-order-moi/?g=' . get_the_ID(); ?>">Thêm order</a>
 <?php 
     }
 }

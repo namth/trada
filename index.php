@@ -1,35 +1,34 @@
 <?php
 get_header();
 ?>
-        <div class="mui-row" id="main_content">
-            <div class="mui-col-md-8 mui-col-md-offset-1">
-            
-            <?php
-                $args = [
-                    'post_type' => 'post',
+<h2>Sự kiện đang hoạt động</h2>
+<div class="order_listing">
+    <?php 
+    $paged = (get_query_var('paged')) ? absint(get_query_var('paged')) : 1;
+    $args = [
+        'post_type' => 'don_hang',
+    ];
+    $args['meta_query'][] = array(
+        array(
+            'key'       => 'trang_thai',
+            'value'     => "Đơn mới",
+            'compare'   => '=',
+        ),
+    );
+    $query = new WP_Query($args);
 
-                ];
+    if ($query->have_posts()) {
+        while ($query->have_posts()) {
+            $query->the_post();
 
-                $query = new WP_Query($args);
-
-                // print_r($query);
-
-                if ($query->have_posts()) {
-                    while ($query->have_posts()) {
-                        $query->the_post();
-
-                        echo "<div class='newtheme_post post_" . get_the_ID() . "'>";
-                        echo get_the_post_thumbnail();
-                        echo "<h4><a href='" . get_the_permalink() . "'>" . get_the_title() . "</a></h4>";
-                        echo "</div>";
-                    }
-                }
-            ?>        
-        
-            </div>
-            <?php get_sidebar(); ?>
-        </div>
-
+            $nhom = get_field('nhom');
+            echo "<a class='neworder' href='" . get_permalink() . "'>" . get_the_title($nhom) . "<br>" . get_field('ngay_thang') . "</a>";
+            // echo "<br>";
+        } wp_reset_postdata();
+    }
+    ?>
+</div>
+<a class='mui-btn mui-btn--primary' href="<?php echo get_bloginfo('url') . '/tao-order-moi/?g=' . get_the_ID(); ?>">Thêm order</a>
 <?php
 
 get_footer();
