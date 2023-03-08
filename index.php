@@ -28,7 +28,6 @@ get_header();
     }
     ?>
 </div>
-<a class='mui-btn mui-btn--primary' href="<?php echo get_bloginfo('url') . '/tao-order-moi/?g=' . get_the_ID(); ?>">Thêm order</a>
 <?php
 
 get_footer();
