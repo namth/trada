@@ -45,15 +45,21 @@ if(is_user_logged_in()) {
                 'remember'      => $remember,
             ), false );
 
-            $userID = $user->ID;
+            // Check if login was successful
+            if (is_wp_error($user)) {
+                $error = true;
+                $error_login = $user->get_error_message();
+            } else {
+                $userID = $user->ID;
 
-            wp_set_current_user( $userID, $username );
-            wp_set_auth_cookie( $userID, true, false );
-            do_action( 'wp_login', $username, $user );
+                wp_set_current_user( $userID, $username );
+                wp_set_auth_cookie( $userID, true, false );
+                do_action( 'wp_login', $username, $user );
 
-            // redirect sang trang chủ
-            wp_redirect( get_bloginfo('url') );
-            exit;
+                // redirect sang trang chủ
+                wp_redirect( get_bloginfo('url') );
+                exit;
+            }
         }
     }
     // redirect sang trang chủ
@@ -66,12 +72,14 @@ get_header();
 <canvas id="starry-background"></canvas>
 
 <div class="login-container">
-    <?php if (isset($error_user) || isset($error_password)): ?>
+    <?php if (isset($error_user) || isset($error_password) || isset($error_login)): ?>
     <div class="alert alert-secondary" role="alert">
         <?php 
-            if ($error_user) {
+            if (isset($error_login)) {
+                echo $error_login;
+            } elseif (isset($error_user)) {
                 echo $error_user;
-            } else if ($error_password) {
+            } elseif (isset($error_password)) {
                 echo $error_password;
             }
         ?>
