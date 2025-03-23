@@ -1,0 +1,1 @@
+<div class="mui-col-md-2" style="background-color: aquamarine;">sidebar</div>
