@@ -24,18 +24,25 @@ $has_access = current_user_can('administrator');
 if (isset($_GET['delete_order']) && wp_verify_nonce($_GET['_wpnonce'], 'delete_order')) {
     $order_id_to_delete = get_the_ID();
     $nhom = get_field('nhom', $order_id_to_delete);
+    $trang_thai = get_field('trang_thai', $order_id_to_delete);
     
-    // Delete the order
-    $deleted = wp_delete_post($order_id_to_delete, true);
-    
-    if ($deleted) {
-        // Redirect to group page if group exists, otherwise to home
-        if ($nhom) {
-            wp_redirect(get_permalink($nhom));
-        } else {
-            wp_redirect(home_url());
+    // Only allow deletion if order status is "Đơn mới"
+    if ($trang_thai == "Đơn mới") {
+        // Delete the order
+        $deleted = wp_delete_post($order_id_to_delete, true);
+        
+        if ($deleted) {
+            // Redirect to group page if group exists, otherwise to home
+            if ($nhom) {
+                wp_redirect(get_permalink($nhom));
+            } else {
+                wp_redirect(home_url());
+            }
+            exit;
         }
-        exit;
+    } else {
+        // Set error message if trying to delete a completed order
+        $thongbao_error = "Không thể xóa đơn hàng đã hoàn thành.";
     }
 }
 
@@ -79,6 +86,12 @@ if (isset($_GET['del']) && ($_GET['del']) && is_user_logged_in()) {
     <?php if (!empty($thongbao)): ?>
         <div class="alert alert-success">
             <?php echo esc_html($thongbao); ?>
+        </div>
+    <?php endif; ?>
+    
+    <?php if (isset($thongbao_error)): ?>
+        <div class="alert alert-error">
+            <?php echo esc_html($thongbao_error); ?>
         </div>
     <?php endif; ?>
     
@@ -249,7 +262,8 @@ if (isset($_GET['del']) && ($_GET['del']) && is_user_logged_in()) {
                     </div>
                 <?php endif; ?>
                 
-                <!-- Add Delete Order button -->
+                <!-- Add Delete Order button only for "Đơn mới" status -->
+                <?php if ($trang_thai == "Đơn mới"): ?>
                 <div class="delete-order-container">
                     <?php
                     // Create a URL with nonce for order deletion
@@ -263,6 +277,7 @@ if (isset($_GET['del']) && ($_GET['del']) && is_user_logged_in()) {
                     ?>
                     <a href="<?php echo esc_url($delete_url); ?>" class="delete-order-btn" onclick="return confirm('Bạn có chắc chắn muốn xóa đơn hàng này? Hành động này không thể hoàn tác.');">Xóa đơn</a>
                 </div>
+                <?php endif; ?>
         <?php
             }
         } else {
