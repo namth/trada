@@ -222,12 +222,11 @@ if ($debt_query->have_posts()) {
 
                 $chiphi_motnguoi = round(($so_tien / count($users)) * (1 + $phi_dich_vu / 100));
 
-
                 if ($users && !empty($users)) {
-                    foreach ($users as $user) {
+                    foreach ($users as $u) {
                         
-                        $user = $user['user'];
-                        $pay = isset($user['pay'])? $user['pay'] : false;
+                        $user = $u['user'];
+                        $pay = $u['pay'] ?? false;
 
                         // I owe money to payer (same as in author.php)
                         if (!$pay && $user == $current_user_id && $nguoi_thanh_toan['ID'] != $current_user_id) {

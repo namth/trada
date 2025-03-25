@@ -9,6 +9,53 @@ if (!is_user_logged_in()) {
     exit;
 }
 
+// Handle group disbanding if requested
+if (isset($_GET['disband_group']) && wp_verify_nonce($_GET['_wpnonce'], 'disband_group')) {
+    $group_id = get_the_ID();
+    $current_user_id = get_current_user_id();
+    $group_owner_id = get_field('chu_quy', $group_id);
+    
+    // Only the group owner can disband the group
+    if ($group_owner_id == $current_user_id) {
+        // Check if there are any unpaid orders in the group
+        $has_unpaid_orders = false;
+        
+        $args = [
+            'post_type' => 'don_hang',
+            'posts_per_page' => 1,
+            'meta_query' => [
+                [
+                    'key' => 'nhom',
+                    'value' => $group_id,
+                    'compare' => '=',
+                ],
+                [
+                    'key' => 'trang_thai',
+                    'value' => 'Đơn mới',
+                    'compare' => '=',
+                ]
+            ],
+        ];
+        
+        $order_query = new WP_Query($args);
+        $has_unpaid_orders = $order_query->have_posts();
+        
+        if ($has_unpaid_orders) {
+            // Cannot disband group with unpaid orders
+            $disband_error = 'Không thể giải tán nhóm khi còn đơn hàng chưa thanh toán.';
+        } else {
+            // Delete the group
+            wp_delete_post($group_id, false);
+            
+            // Redirect to groups list
+            wp_redirect(home_url('/danh-sach-nhom/'));
+            exit;
+        }
+    } else {
+        $disband_error = 'Chỉ chủ nhóm mới có quyền giải tán nhóm.';
+    }
+}
+
 // Handle member removal if requested
 if (isset($_GET['remove_member']) && wp_verify_nonce($_GET['_wpnonce'], 'remove_member')) {
     $member_id = intval($_GET['remove_member']);
@@ -174,7 +221,8 @@ if (have_posts()) {
                                 $user = get_sub_field('user');
                                 $pay = get_sub_field('pay');
                                 
-                                if (!$pay && $nguoi_thanh_toan['ID'] != $user) {
+                                // Fix: Check if $nguoi_thanh_toan is not null and has ID property before accessing it
+                                if (!$pay && isset($nguoi_thanh_toan) && isset($nguoi_thanh_toan['ID']) && $nguoi_thanh_toan['ID'] != $user) {
                                     if (!isset($payment[$nguoi_thanh_toan['ID']][$user])) {
                                         $payment[$nguoi_thanh_toan['ID']][$user] = 0;
                                     }
@@ -393,6 +441,12 @@ if (have_posts()) {
             <?php echo esc_html($owner_message); ?>
         </div>
     <?php endif; ?>
+    
+    <?php if (isset($disband_error)): ?>
+        <div class="alert alert-error">
+            <?php echo esc_html($disband_error); ?>
+        </div>
+    <?php endif; ?>
 
     <div class="action-buttons">
         <a class="mui-btn" href="javascript:history.back()">« Quay lại</a>
@@ -515,9 +569,24 @@ if (have_posts()) {
     </div>
 
     <?php if ($is_manager): ?>
-    <a class='debt-details-button' href="<?php echo get_bloginfo('url') . '/them-thanh-vien-moi/?g=' . $group; ?>">Tạo tài khoản thành viên</a>
-    <a class='debt-details-button' href="<?php echo get_bloginfo('url') . '/them-thanh-vien-tu-danh-sach/?g=' . $group; ?>">Thêm thành viên</a>
-    <a class='debt-details-button' href="<?php echo get_bloginfo('url') . '/kiem-tra-cong-no-nhom/?g=' . $group; ?>">Kiểm tra công nợ</a>
+    <div class="action-buttons">
+        <a class='debt-details-button' href="<?php echo get_bloginfo('url') . '/them-thanh-vien-moi/?g=' . $group; ?>">Tạo tài khoản thành viên</a>
+        <a class='debt-details-button' href="<?php echo get_bloginfo('url') . '/them-thanh-vien-tu-danh-sach/?g=' . $group; ?>">Thêm thành viên</a>
+        <a class='debt-details-button' href="<?php echo get_bloginfo('url') . '/kiem-tra-cong-no-nhom/?g=' . $group; ?>">Kiểm tra công nợ</a>
+        <?php if ($current_user_id == $group_owner_id): ?>
+        <?php 
+            // Create a URL with nonce for group disbanding
+            $disband_url = add_query_arg(
+                array(
+                    'disband_group' => 1,
+                    '_wpnonce' => wp_create_nonce('disband_group')
+                ),
+                get_permalink()
+            );
+        ?>
+        <a class='disband-group-btn' href="<?php echo esc_url($disband_url); ?>" onclick="return confirm('Bạn có chắc chắn muốn giải tán nhóm này? Hành động này sẽ xóa nhóm vĩnh viễn và không thể hoàn tác.');">Giải tán nhóm</a>
+        <?php endif; ?>
+    </div>
     <?php endif; ?>
 
     <!-- Add debt detail button for all members -->

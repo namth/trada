@@ -20,6 +20,25 @@ $current_user_id = get_current_user_id();
 $order_id = get_the_ID();
 $has_access = current_user_can('administrator');
 
+// Handle order deletion if requested
+if (isset($_GET['delete_order']) && wp_verify_nonce($_GET['_wpnonce'], 'delete_order')) {
+    $order_id_to_delete = get_the_ID();
+    $nhom = get_field('nhom', $order_id_to_delete);
+    
+    // Delete the order
+    $deleted = wp_delete_post($order_id_to_delete, true);
+    
+    if ($deleted) {
+        // Redirect to group page if group exists, otherwise to home
+        if ($nhom) {
+            wp_redirect(get_permalink($nhom));
+        } else {
+            wp_redirect(home_url());
+        }
+        exit;
+    }
+}
+
 // If not admin, check if user is part of the group
 if (!$has_access && have_posts()) {
     // Get the group ID associated with this order
@@ -48,7 +67,7 @@ if (!$has_access) {
     exit;
 }
 
-// Handle deletion if requested
+// Handle deletion if requested (for order items)
 if (isset($_GET['del']) && ($_GET['del']) && is_user_logged_in()) {
     $del_id = $_GET['del'];
     $thongbao = "Đã xoá " . get_the_title($del_id);
@@ -229,6 +248,21 @@ if (isset($_GET['del']) && ($_GET['del']) && is_user_logged_in()) {
                         </a>
                     </div>
                 <?php endif; ?>
+                
+                <!-- Add Delete Order button -->
+                <div class="delete-order-container">
+                    <?php
+                    // Create a URL with nonce for order deletion
+                    $delete_url = add_query_arg(
+                        array(
+                            'delete_order' => 1,
+                            '_wpnonce' => wp_create_nonce('delete_order')
+                        ),
+                        get_permalink()
+                    );
+                    ?>
+                    <a href="<?php echo esc_url($delete_url); ?>" class="delete-order-btn" onclick="return confirm('Bạn có chắc chắn muốn xóa đơn hàng này? Hành động này không thể hoàn tác.');">Xóa đơn</a>
+                </div>
         <?php
             }
         } else {
