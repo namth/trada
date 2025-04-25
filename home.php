@@ -14,6 +14,18 @@ $current_user = wp_get_current_user();
 $current_user_id = $current_user->ID;
 $is_admin = current_user_can('administrator');
 
+// Check for pending payment confirmations
+global $wpdb;
+$table_name = $wpdb->prefix . 'payment_transactions';
+$pending_payments_count = 0;
+
+if ($table_name) {
+    $pending_payments_count = $wpdb->get_var($wpdb->prepare(
+        "SELECT COUNT(*) FROM $table_name WHERE payer_id = %d AND status = 'pending'",
+        $current_user_id
+    ));
+}
+
 // Initialize debt data array - similar to author.php approach
 $debt_data = array();
 $total_debt = 0;
@@ -276,6 +288,22 @@ if (!empty($debt_data)) {
 ?>
 
 <div class="container">
+    <?php if ($pending_payments_count > 0): ?>
+    <div class="payment-notification">
+        <div class="notification-content">
+            <div class="notification-icon">
+                <i class="dashicons dashicons-bell"></i>
+            </div>
+            <div class="notification-text">
+                Bạn có <strong><?php echo $pending_payments_count; ?></strong> thanh toán đang chờ xác nhận.
+            </div>
+        </div>
+        <a href="<?php echo home_url('/xac-nhan-da-thanh-toan/'); ?>" class="notification-action">
+            Xác nhận ngay
+        </a>
+    </div>
+    <?php endif; ?>
+
     <div class="home-welcome">
         <h1>
             <span class="welcome-avatar">

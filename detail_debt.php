@@ -8,27 +8,29 @@ get_header();
 // Get parameters
 $user_id = isset($_GET['u']) ? $_GET['u'] : get_current_user_id();
 $group_id = isset($_GET['g']) ? $_GET['g'] : null;
+$payer_id = isset($_GET['pay']) ? $_GET['pay'] : null; // Add payer ID parameter
 $current_user_id = get_current_user_id();
 
 // Initialize variables
 $debt_data = array();
 $total_debt = 0;
 $user_info = get_user_by('id', $user_id);
+$payer_info = $payer_id ? get_user_by('id', $payer_id) : null;
 
 // Set up query for orders
 $orders_args = [
-    'post_type' => 'don_hang',
-    'posts_per_page' => 999,
-    'meta_query'    => array(
+    'post_type'         => 'don_hang',
+    'posts_per_page'    => 999,
+    'meta_query'        => array(
         array(
             'key'       => 'trang_thai',
             'value'     => "Thanh toán xong",
             'compare'   => '=',
         )
     ),
-    'meta_key' => 'ngay_thang',
-    'orderby' => 'meta_value',
-    'order' => 'DESC'
+    'meta_key'  => 'ngay_thang',
+    'orderby'   => 'meta_value',
+    'order'     => 'DESC'
 ];
 
 // Filter by group if specified
@@ -95,24 +97,26 @@ if ($order_query->have_posts()) {
                         $pay = get_sub_field('pay');
                         
                         // Là người nợ tiền (người sử dụng chưa thanh toán và không phải người thanh toán)
-                        if (!$pay && $user == $user_id && $nguoi_thanh_toan['ID'] != $user_id) {
+                        if (!$pay && $user == $user_id && $nguoi_thanh_toan['ID'] != $user_id && 
+                            ($payer_id === null || $payer_id == $nguoi_thanh_toan['ID'])) {
                             $debt_data[] = array(
-                                'date' => $ngay_thang,
-                                'payer' => $nguoi_thanh_toan['display_name'],
-                                'payer_id' => $nguoi_thanh_toan['ID'],
-                                'debtor' => $user_info->display_name,
-                                'debtor_id' => $user_id, // Add debtor_id
-                                'order_title' => $order_title,
-                                'group_name' => $group_name,
-                                'group_id' => $group,
-                                'amount' => $chiphi_motnguoi,
-                                'status' => $pay ? 'Đã thanh toán' : 'Chưa thanh toán'
+                                'date'          => $ngay_thang,
+                                'payer'         => $nguoi_thanh_toan['display_name'],
+                                'payer_id'      => $nguoi_thanh_toan['ID'],
+                                'debtor'        => $user_info->display_name,
+                                'debtor_id'     => $user_id, // Add debtor_id
+                                'order_title'   => $order_title,
+                                'group_name'    => $group_name,
+                                'group_id'      => $group,
+                                'amount'        => $chiphi_motnguoi,
+                                'status'        => $pay ? 'Đã thanh toán' : 'Chưa thanh toán'
                             );
                             $total_debt += $chiphi_motnguoi;
                         }
                         
                         // Là người thanh toán (người khác nợ mình)
-                        if (!$pay && $nguoi_thanh_toan['ID'] == $user_id && $user != $user_id) {
+                        if (!$pay && $nguoi_thanh_toan['ID'] == $user_id && $user != $user_id && 
+                            ($payer_id === null || $payer_id == $user_id)) {
                             $debtor = get_user_by('id', $user);
                             $debt_data[] = array(
                                 'date' => $ngay_thang,

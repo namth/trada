@@ -5,6 +5,10 @@ $current_user_id = $this_user->ID;
 $logged_in_user_id = get_current_user_id();
 $is_own_profile = ($current_user_id == $logged_in_user_id);
 
+// Get bank account information
+$bank_account = get_user_meta($current_user_id, 'bank_account', true);
+$bank_name = get_user_meta($current_user_id, 'bank_name', true);
+
 // Initialize debt data array
 $debt_data = array();
 $total_debt = 0;
@@ -125,6 +129,24 @@ if ($order_query->have_posts()) {
         
         <h2 class="author-name"><?php echo $this_user->display_name; ?></h2>
         
+        <?php if (!empty($bank_account) || !empty($bank_name)): ?>
+        <div class="author-bank-info">
+            <?php if (!empty($bank_account)): ?>
+            <div class="bank-account">
+                <span class="bank-label">Số tài khoản:</span>
+                <span class="bank-value"><?php echo esc_html($bank_account); ?></span>
+            </div>
+            <?php endif; ?>
+            
+            <?php if (!empty($bank_name)): ?>
+            <div class="bank-name">
+                <span class="bank-label">Ngân hàng:</span>
+                <span class="bank-value"><?php echo esc_html($bank_name); ?></span>
+            </div>
+            <?php endif; ?>
+        </div>
+        <?php endif; ?>
+        
         <?php if ($is_own_profile): ?>
         <div class="author-actions">
             <a href="<?php echo home_url("/chinh-sua-thong-tin"); ?>" class="debt-details-button">Chỉnh sửa thông tin</a>
@@ -142,24 +164,30 @@ if ($order_query->have_posts()) {
                     <tr>
                         <th>Người dùng</th>
                         <th>Số tiền</th>
+                        <th></th> <!-- Empty header for action column -->
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (empty($debt_data)): ?>
                     <tr>
-                        <td colspan="2" class="center">Không có dữ liệu công nợ</td>
+                        <td colspan="3" class="center">Không có dữ liệu công nợ</td> <!-- Updated colspan from 2 to 3 -->
                     </tr>
                     <?php else: ?>
                         <?php foreach ($debt_data as $user_id => $data): ?>
                         <tr>
                             <td>
-                                <a href="<?php echo get_bloginfo('url'); ?>/chi-tiet-cong-no/?u=<?php echo $current_user_id; ?>&p=<?php echo $user_id; ?>">
+                                <a href="<?php echo get_bloginfo('url'); ?>/chi-tiet-cong-no/?u=<?php echo $current_user_id; ?>&pay=<?php echo $user_id; ?>">
                                     <?php echo $data['display_name']; ?>
                                 </a>
                             </td>
                             <td class="<?php echo $data['amount'] < 0 ? 'negative' : 'positive'; ?>">
                                 <?php echo number_format(abs($data['amount'])); ?> đ
                                 <?php echo $data['amount'] < 0 ? '(+)' : '(-)'; ?>
+                            </td>
+                            <td>
+                                <a href="<?php echo get_bloginfo('url'); ?>/show-qrcode/?u=<?php echo $current_user_id; ?>&pay=<?php echo $user_id; ?>" class="debt-details-button qr-button">
+                                    QR Code
+                                </a>
                             </td>
                         </tr>
                         <?php endforeach; ?>
@@ -168,7 +196,7 @@ if ($order_query->have_posts()) {
                 <tfoot>
                     <tr>
                         <td style="text-align: right;"><strong>Tổng cộng:</strong></td>
-                        <td class="<?php echo $total_debt < 0 ? 'negative' : 'positive'; ?>">
+                        <td colspan="2" class="<?php echo $total_debt < 0 ? 'negative' : 'positive'; ?>"> <!-- Updated colspan -->
                             <strong>
                                 <?php echo number_format(abs($total_debt)); ?> đ
                                 <?php echo $total_debt < 0 ? '(+)' : '(-)'; ?>
@@ -180,5 +208,12 @@ if ($order_query->have_posts()) {
         </div>
     </div>
 </div>
+
+<style>
+    .qr-button {
+        padding: 4px 8px;
+        font-size: 0.85em;
+    }
+</style>
 
 <?php get_footer(); ?>

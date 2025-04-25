@@ -1,0 +1,20 @@
+[2025-04-05 14:06:23] {"raw_input":"","processed":null}
+[2025-04-05 14:06:23] {"error":"Invalid data or not an incoming transfer"}
+[2025-04-05 14:06:38] {"raw_input":"","processed":null}
+[2025-04-05 14:06:38] {"error":"Invalid data or not an incoming transfer"}
+[2025-04-05 14:06:40] {"raw_input":"","processed":null}
+[2025-04-05 14:06:40] {"error":"Invalid data or not an incoming transfer"}
+[2025-04-05 14:07:08] {"raw_input":"","processed":null}
+[2025-04-05 14:07:08] {"error":"Invalid data or not an incoming transfer"}
+[2025-04-05 14:11:29] {"raw_input":"{\"id\":74268,\"gateway\":\"Vietcombank\",\"transactionDate\":\"2025-04-05 14:11:27\",\"accountNumber\":\"0123499999\",\"code\":null,\"content\":\"QYmQyYjAzOWRPWGU5bTNybVk3K2YycUNRNk45RjRnPT0\",\"transferType\":\"in\",\"transferAmount\":150000,\"accumulated\":1150000,\"subAccount\":null,\"referenceCode\":\"MBVCB.6390043982\",\"description\":\"Mock test payment\"}","processed":{"id":74268,"gateway":"Vietcombank","transactionDate":"2025-04-05 14:11:27","accountNumber":"0123499999","code":null,"content":"QYmQyYjAzOWRPWGU5bTNybVk3K2YycUNRNk45RjRnPT0","transferType":"in","transferAmount":150000,"accumulated":1150000,"subAccount":null,"referenceCode":"MBVCB.6390043982","description":"Mock test payment"}}
+[2025-04-05 14:11:29] {"warning":"Amount mismatch: expected 0, got 150000"}
+[2025-04-05 14:11:29] {"error":"No orders processed"}
+[2025-04-05 14:22:25] {"raw_input":"{\"id\":60143,\"gateway\":\"Vietcombank\",\"transactionDate\":\"2025-04-05 14:22:25\",\"accountNumber\":\"0123499999\",\"code\":null,\"content\":\"QMGVhMGY4ZTQ4S0ZvbWZqaFAwcjdxZEVDZzhkbUt3PT0\",\"transferType\":\"in\",\"transferAmount\":150000,\"accumulated\":1150000,\"subAccount\":null,\"referenceCode\":\"MBVCB.6777245141\",\"description\":\"QMWZlZGEwMDA2UVg1SkpIWTc0YVNweUU5WEVoM2lRPT0\"}","processed":{"id":60143,"gateway":"Vietcombank","transactionDate":"2025-04-05 14:22:25","accountNumber":"0123499999","code":null,"content":"QMGVhMGY4ZTQ4S0ZvbWZqaFAwcjdxZEVDZzhkbUt3PT0","transferType":"in","transferAmount":150000,"accumulated":1150000,"subAccount":null,"referenceCode":"MBVCB.6777245141","description":"QMWZlZGEwMDA2UVg1SkpIWTc0YVNweUU5WEVoM2lRPT0"}}
+[2025-04-05 14:22:25] {"warning":"Amount mismatch: expected 0, got 150000"}
+[2025-04-05 14:22:25] {"error":"No orders processed"}
+[2025-04-05 14:26:07] {"raw_input":"{\"id\":12489,\"gateway\":\"Vietcombank\",\"transactionDate\":\"2025-04-05 14:26:06\",\"accountNumber\":\"0123499999\",\"code\":null,\"content\":\"QMWZlZGEwMDA2UVg1SkpIWTc0YVNweUU5WEVoM2lRPT0\",\"transferType\":\"in\",\"transferAmount\":71000,\"accumulated\":1071000,\"subAccount\":null,\"referenceCode\":\"MBVCB.9524087033\",\"description\":\"Mock test payment\"}","processed":{"id":12489,"gateway":"Vietcombank","transactionDate":"2025-04-05 14:26:06","accountNumber":"0123499999","code":null,"content":"QMWZlZGEwMDA2UVg1SkpIWTc0YVNweUU5WEVoM2lRPT0","transferType":"in","transferAmount":71000,"accumulated":1071000,"subAccount":null,"referenceCode":"MBVCB.9524087033","description":"Mock test payment"}}
+[2025-04-05 14:26:07] {"warning":"Amount mismatch: expected 0, got 71000"}
+[2025-04-05 14:26:07] {"error":"No orders processed"}
+[2025-04-05 14:28:59] {"raw_input":"{\"id\":21488,\"gateway\":\"Vietcombank\",\"transactionDate\":\"2025-04-05 14:28:57\",\"accountNumber\":\"0123499999\",\"code\":null,\"content\":\"QMWZlZGEwMDA2UVg1SkpIWTc0YVNweUU5WEVoM2lRPT0\",\"transferType\":\"in\",\"transferAmount\":71000,\"accumulated\":1071000,\"subAccount\":null,\"referenceCode\":\"MBVCB.1930098872\",\"description\":\"Mock test payment\"}","processed":{"id":21488,"gateway":"Vietcombank","transactionDate":"2025-04-05 14:28:57","accountNumber":"0123499999","code":null,"content":"QMWZlZGEwMDA2UVg1SkpIWTc0YVNweUU5WEVoM2lRPT0","transferType":"in","transferAmount":71000,"accumulated":1071000,"subAccount":null,"referenceCode":"MBVCB.1930098872","description":"Mock test payment"}}
+[2025-04-05 14:28:59] {"warning":"Amount mismatch: expected 0, got 71000"}
+[2025-04-05 14:28:59] {"error":"No orders processed"}

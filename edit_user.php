@@ -24,6 +24,17 @@ if ($user_id !== $current_user->ID && !current_user_can('administrator')) {
 $user_data = get_userdata($user_id);
 $thongbao = '';
 
+// Load banks data from JSON file
+$banks_file = get_template_directory() . '/banks.json';
+$banks_data = [];
+if (file_exists($banks_file)) {
+    $banks_json = file_get_contents($banks_file);
+    $banks_array = json_decode($banks_json, true);
+    if (isset($banks_array['data']) && is_array($banks_array['data'])) {
+        $banks_data = $banks_array['data'];
+    }
+}
+
 if (
     isset($_POST['post_nonce_field']) &&
     wp_verify_nonce($_POST['post_nonce_field'], 'edit_user_nonce')
@@ -32,6 +43,8 @@ if (
     $email = sanitize_email($_POST['email']);
     $password = trim($_POST['password']);
     $confirm_password = trim($_POST['confirm_password']);
+    $bank_account = sanitize_text_field($_POST['bank_account']);
+    $bank_name = sanitize_text_field($_POST['bank_name']);
     
     $error = false;
     
@@ -77,6 +90,10 @@ if (
         if (is_wp_error($update_result)) {
             $thongbao = "<div class='error-message'>Lỗi: " . $update_result->get_error_message() . "</div>";
         } else {
+            // Save bank account details to user meta
+            update_user_meta($user_id, 'bank_account', $bank_account);
+            update_user_meta($user_id, 'bank_name', $bank_name);
+            
             $thongbao = "<div class='success-message'>Cập nhật thông tin thành công!</div>";
             
             // Refresh user data after update
@@ -85,9 +102,11 @@ if (
     }
 }
 
-// Get the refreshed user data
+// Get the refreshed user data and meta data
 $display_name = $user_data->display_name;
 $email = $user_data->user_email;
+$bank_account = get_user_meta($user_id, 'bank_account', true);
+$bank_name = get_user_meta($user_id, 'bank_name', true);
 ?>
 
 <div class="container">
@@ -116,6 +135,23 @@ $email = $user_data->user_email;
             </div>
             
             <div class="mui-textfield">
+                <label for="bank_account">Số tài khoản</label>
+                <input type="text" id="bank_account" name="bank_account" value="<?php echo esc_attr($bank_account); ?>">
+            </div>
+            
+            <div class="mui-select">
+                <label for="bank_name">Ngân hàng</label>
+                <select id="bank_name" name="bank_name">
+                    <option value="">-- Chọn ngân hàng --</option>
+                    <?php foreach ($banks_data as $bank): ?>
+                        <option value="<?php echo esc_attr($bank['short_name']); ?>" <?php selected($bank_name, $bank['short_name']); ?>>
+                            <?php echo esc_html($bank['short_name'] . ' - ' . $bank['name']); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            
+            <div class="mui-textfield">
                 <label for="password">Mật khẩu mới (để trống nếu không thay đổi)</label>
                 <input type="password" id="password" name="password">
                 <p class="password-hint">Mật khẩu cần có ít nhất 8 ký tự, 1 chữ in hoa và 1 ký tự đặc biệt</p>
@@ -129,7 +165,7 @@ $email = $user_data->user_email;
             
             <?php wp_nonce_field('edit_user_nonce', 'post_nonce_field'); ?>
             
-            <div class="form-actions center"></div>
+            <div class="form-actions center">
                 <button type="submit" class="mui-btn mui-btn--raised mui-btn--primary">Cập nhật thông tin</button>
             </div>
         </form>
